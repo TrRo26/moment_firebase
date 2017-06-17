@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>EDM</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/momentjs/2.18.1/moment.min.js"></script>
+
+</head>
+<body class="container">
+
+<div class="row">
+	<div class="col-lg-12"></div>
+		<center><h1>EMPLOYEE DATA MANAGEMENT</h1></center>
+
+		<!-- CURRENT EMPLOYEES PANEL -->
+		<div class="panel panel-default">
+		  <div class="panel-heading" style="background: blue; color: white">
+		    <h3 class="panel-title">Current Employees</h3>
+		  </div>
+		  <div class="panel-body">
+		    <table id="hook" class="table">
+		    	<tr>
+	 					<th>Name</th>
+	 					<th>Role</th>
+	 					<th>Start Date</th>
+	 					<th>Months Worked</th>
+	 					<th>Monthly Rate</th>
+	 					<th>Total Billed</th>
+	 				</tr>
+	 				<tr>
+	 					<td>Sample</td>
+	 					<td>Sample</td>
+	 					<td>Sample</td>
+	 					<td>Sample</td>
+	 					<td>Sample</td>
+	 					<td>Sample</td>
+	 				</tr>
+				</table>
+		  </div>
+		</div>
+
+		<!-- ADD EMPLOYEES PANEL -->
+		<div class="panel panel-default">
+		  <div class="panel-heading" style="background: blue; color: white">
+		    <h3 class="panel-title">Add Employee</h3>
+		  </div>
+		  <div class="panel-body">
+		    
+		    <!-- FORM - ADD EMOPLOYEE -->
+		  	<form>
+				  <div class="form-group">
+				    <label for="employee-name">Employee Name</label>
+				    <input type="text" class="form-control grab-name">
+				  </div>
+				  <div class="form-group">
+				    <label for="role">Role</label>
+				    <input type="text" class="form-control grab-role">
+				  </div>
+				  <div class="form-group">
+				    <label for="start-date">Start Date (DD/MM/YY)</label>
+				    <input type="text" class="form-control grab-sdate">
+				  </div>
+				  <div class="form-group">
+				    <label for="monthly-rate">Monthly Rate</label>
+				    <input type="text" class="form-control grab-rate">
+				  </div>
+				  <button type="submit" class="btn btn-default add-emp-submit">Submit</button>
+				</form>
+
+		  </div>
+		</div>
+</div>
+
+
+	<!-- JAVASCRIPT -->
+	<script>
+  
+  // INITIALIZE FIREBASE
+  var config = {
+    apiKey: "AIzaSyBKFml19YJpmaq0E-xb-5JW1B7FKqiEoac",
+    authDomain: "fries-d62e4.firebaseapp.com",
+    databaseURL: "https://fries-d62e4.firebaseio.com",
+    projectId: "fries-d62e4",
+    storageBucket: "fries-d62e4.appspot.com",
+    messagingSenderId: "180179774328"
+  };
+
+  firebase.initializeApp(config);
+  var database = firebase.database()
+
+  // JQUERY THE SHIT OUTTA THE FORM
+  var name, role, sDate, rate
+
+  $('.add-emp-submit').on('click', function() {
+  	name = $('.grab-name').val().trim()
+  	role = $('.grab-role').val().trim()
+  	sDate = $('.grab-sdate').val().trim()
+  	rate = $('.grab-rate').val().trim()
+
+  	database.ref().push({
+  		name: name,
+  		role: role,
+  		sdate: sDate,
+  		rate: rate,
+  		dateTime: firebase.database.ServerValue.TIMESTAMP
+  	})
+  })
+
+	database.ref().on('child_added', function(shtuff) {
+		var dName = shtuff.val().name
+		var dRole = shtuff.val().role
+		var dSDate = shtuff.val().sdate
+		var dRate = shtuff.val().rate
+
+		var monthsWorked
+		var totalBilled
+
+		$('#hook').append("<tr> <td>"+dName+"</td> <td>"+dRole+"</td> <td>"+dSDate+"</td> <td>"+monthsWorked+"</td> <td>"+dRate+"</td> <td>"+totalBilled+"</td> </tr>")
+  })
+
+	// SORTING AND LIMITING TO MOST RECENT RECORD
+	// database.ref().orderByChild('dateAdded').limitToLast(1).on('child_added', function(tada) {
+	// })
+
+	console.log(moment().format("DD/MM/YY hh:mm A"))
+
+</script>
+
+</body>
+</html>
